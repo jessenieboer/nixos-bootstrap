@@ -1,45 +1,20 @@
-* vm (hyper v)
+had some help: https://www.youtube.com/watch?v=AGVXJ-TIv3Y
+* hardware setup
+** vm (hyper v)
   gen 2
   external network, allow management os to share
   enable guest services for a good fullscreen
-* nixos install
-start out as nixos user with no password
-** partitioning
-sudo everything, probably:
-parted -l (list disks)
-parted [disk name]
-parted mklabel gpt (make partition table)
-parted print (show table)
-- note partition sizes are debatable. nixos wants 512 for boot, and with 8GB ram i'm going with 4GB swap on 32GB hard disk (at the end). the rest is the root partition
-mkpart primary 512MB 28GB
-mkpart primary linux-swap 28GiB 100%
-mkpart ESP fat32 1MiB 512MiB
-set 3 esp on
-** formatting
-sudo:
-mkfs.ext4 -L nixos /dev/sda1
-mkswap -L swap /dev/sda2
-mkfs.fat -F 32 -n boot /dev/sda3
-** install
-sudo:
-mount /dev/disk/by-label/nixos /mnt
-mkdir -p /mnt/boot
-mount /dev/disk/by-label/boot /mnt/boot
-swapon /dev/sda2
-nixos-generate-config --root /mnt
-might need to do some network config (
-nixos-install
-* add git to default /etc/nixos/configuration.nix
-environment.systemPackages = with pkgs; [
-  git
-];
-* clone repo to wherever
-git clone 
-then
-cp -f cbootstrap.nix /etc/nixos/configuration.nix
-cp fbootstrap.nix /etc/nixos/flake.nix
-* configuration flake
-- it's responsible for the following:
+* os update
+nix-channel --add https://nixos.org/channels/(channel name) nixos
+
+nixos-rebuild switch --upgrade
+
+
+* useful commands
+nixos-version
+* add your own nixosConfigurations
+copy (or overwrite) the nixos-bootstrap stuff
+- /etc/nixos/ flake is responsible for the following:
   - getting nix flakes
   - system-wide config
     - time zone
@@ -48,4 +23,24 @@ cp fbootstrap.nix /etc/nixos/flake.nix
     - home manager?
     - git
   - secrets...
- 
+  - other flakes will depend on this one?
+  - repo: one repo to rule them all? (all machines in one file, at least until it's useful to break them up)
+* old stuff
+*** add git to default /etc/nixos/configuration.nix
+nano /etc/nixos/configuration.nix
+
+environment.systemPackages = with pkgs; [
+  git
+];
+
+then nixos-rebuild switch (to install git)
+*** use git to clone repo
+git clone https://github.com/jessenieboer/nixos-bootstrap.git
+*** apply nixos-bootstrap config; get flake stuff
+cp -f ./nixos-bootstrap/configuration.nix /etc/nixos/
+nixos-rebuild switch
+*** flakify config
+cp ./nixos-bootstrap/flake.nix /etc/nixos/
+nixos-rebuild switch --flake '/etc/nixos/#nixos-bootstrap'
+
+now the system is the 'nixos-bootstrap' system as defined in /etc/nixos/flake.nix

@@ -1,0 +1,59 @@
+#+title: nixos-bootstrap
+#+startup: showall
+
+* About the project
+** What
+it's mostly simplified instructions in the readme. not trying to understand or explain everything. windows user mostly. just going to dumbly follow instructions until i get it to work.
+
+bootstrap in the sense that this seems to be the minimum you need to get started working with your configs in flakes
+
+** Why
+for my own reference, for posterity, because I like to have a solid starting point, it makes my brain feel good, in order to recreate my nixos systems
+** By whom
+i can't remember the guides i used for formatting/partitioning
+pretty sure i used the nixos manual. latest version is https://nixos.org/manual/nixos/stable/index.html#nixos-manual
+
+had some help: https://www.youtube.com/watch?v=AGVXJ-TIv3Y
+** For whom
+
+** How to use
+probably just follow the readme
+** How to contribute
+
+* Contents
+* Hardware setup
+** Hyper-V
+* NixOS setup
+start out as nixos user with no password
+this is just an example to follow along with, you may need to use different values for memory, etc...
+
+** partitioning
+sudo everything, probably:
+parted -l (list disks)
+parted [disk name]
+parted mklabel gpt (make partition table)
+parted print (show table)
+- note partition sizes are debatable. nixos wants 512 for boot, and with 8GB ram i'm going with 4GB swap on 32GB hard disk (at the end). the rest is the root partition
+mkpart primary 512MB 28GB
+mkpart primary linux-swap 28GiB 100%
+mkpart ESP fat32 1MiB 512MiB
+set 3 esp on
+** formatting
+sudo:
+mkfs.ext4 -L nixos /dev/sda1
+mkswap -L swap /dev/sda2
+mkfs.fat -F 32 -n boot /dev/sda3
+** install from iso
+sudo:
+mount /dev/disk/by-label/nixos /mnt
+mkdir -p /mnt/boot
+mount /dev/disk/by-label/boot /mnt/boot
+swapon /dev/sda2
+nixos-generate-config --root /mnt
+might need to do some network config (
+nixos-install
+** minimal configuration
+start with generated configuration.nix
+nixos-generate-config --force (will destroy existing config, which is fine if we are using my config)
+
+curl -o -H "Accept:application/vnd.github.v3.raw" https://api.github.com/repos/jessenieboer/nixos-bootstrap/contents/configuration.nix

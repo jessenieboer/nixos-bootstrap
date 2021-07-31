@@ -10,21 +10,17 @@
     efi.canTouchEfiVariables = true;
   };
 
-  environment.systemPackages = with pkgs; [
-	  git
-	];
-
   networking = {
     useDHCP = false;
     interfaces.eth0.useDHCP = true;
   };  
   
   nix = {
-    package = pkgs.nixUnstable;
+    package = pkgs.nixFlakes;
     extraOptions = ''
       experimental-features = nix-command flakes
     '';
   };
 
-  system.stateVersion = 21.05;
+  system.stateVersion = "21.11";
 }
