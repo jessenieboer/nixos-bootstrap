@@ -14,6 +14,8 @@ i can't remember the guides i used for formatting/partitioning
 pretty sure i used the nixos manual. latest version is https://nixos.org/manual/nixos/stable/index.html#nixos-manual
 
 had some help: https://www.youtube.com/watch?v=AGVXJ-TIv3Y
+
+learning how to use org files as readme: https://github.com/tgbugs/orgstrap/blob/master/README.org
 ** For whom
 
 ** How to use
@@ -56,4 +58,8 @@ nixos-install
 start with generated configuration.nix
 nixos-generate-config --force (will destroy existing config, which is fine if we are using my config)
 
-curl -o -H "Accept:application/vnd.github.v3.raw" https://api.github.com/repos/jessenieboer/nixos-bootstrap/contents/configuration.nix
+curl -o /etc/nixos/configuration.nix -H "Accept:application/vnd.github.v3.raw" https://api.github.com/repos/jessenieboer/nixos-bootstrap/contents/configuration.nix?ref=master
+
+then nixos-rebuild switch
+* Flakes setup
+
