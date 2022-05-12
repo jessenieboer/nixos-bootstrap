@@ -55,11 +55,54 @@ nixos-generate-config --root /mnt
 might need to do some network config (
 nixos-install
 ** minimal configuration
+*** minimal config to get flakes
 start with generated configuration.nix
 nixos-generate-config --force (will destroy existing config, which is fine if we are using my config)
 
-curl -o /etc/nixos/configuration.nix -H "Accept:application/vnd.github.v3.raw" https://api.github.com/repos/jessenieboer/nixos-bootstrap/contents/configuration.nix?ref=master
 
-then nixos-rebuild switch
-* Flakes setup
+curl -o /etc/nixos/configuration.nix -H "Accept:application/vnd.github.v3.raw" https://api.github.com/repos/jessenieboer/nixos-bootstrap/contents/configuration.nix?ref=master 
 
+then nixos-rebuild switch (this gives us flakes)
+
+sometimes the server gives you "error: unable to download" and you have to keep retrying
+*** minimal config via flake
+make your own directory for your configs, then cd to it
+mkdir <name>
+cd <name>
+
+cp etc/nixos/*.nix .
+
+curl -o flake.nix -H
+"Accept:application/vnd.github.v3.raw" https://api.github.com/repos/jessenieboer/nixos-bootstrap/contents/flake.nix?ref=master
+
+
+
+nixos-rebuild switch --flake .#minimal
+** further config
+*** from scratch
+*** getting existing configs from githup
+add enough config stuff to push it to a remote if you want (i'm using github)
+https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
+
+can remove this ssh key later and make a new one when the user configs are set up correctly in future configurations
+
+* ip-factory
+- put together combinations of the different scopes to get the machine you want (dev machine, build server, general computing, etc...)
+- generally one flake per "module" so they can be used as separate inputs
+- a machine is not the same as an ip-factory
+** ideological scope
+no real nix stuff needed
+** hardware/infrastructure/os/system
+- nixos configs contained in a flake (note that flake = a set of inputs and outputs)
+- configs tied to hardware, so config per hardware setup, perhaps with varying infrastructure? (laptop hyper v, desktop hyper v, old laptop, etc...)
+- either different flakes for different hardware, or one flake per "owner" of the hardware, i.e. a flake per kingdom (my machines, vermeer machines, etc...)
+** platform/technology/maybe purpose
+- haskell flake, python flake, etc... (dev, test, run?)
+- perhaps a haskell flake, then sub-flakes for haskell dev and test and run?
+** product/project
+- my project (dev, test, run?)
+- dotfiles
+** team/user
+- home manager for user
+- not sure about team
+- dotfiles
