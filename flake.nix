@@ -1,5 +1,5 @@
 {
-  description = "A minimal flake that helps you get started flakifying your configs";
+  description = "A flake that helps you get started flakifying your configs";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-21.11";
@@ -15,9 +15,39 @@
     in {
       nixosConfigurations = {
         minimal = lib.nixosSystem {
-                              inherit system;
-                              modules = [ ./configuration.nix ];
-                            };
+          inherit system;
+          modules = [
+            ({ config, pkgs, ... }: {
+
+              imports =[
+                ./hardware-configuration.nix
+              ];
+
+              config = {
+                
+                boot.loader = {
+                  systemd-boot.enable = true;
+                  efi.canTouchEfiVariables = true;
+                };
+                
+                networking = {
+                  useDHCP = false;
+                  interfaces.eth0.useDHCP = true;
+                };  
+                
+                nix = {
+                  package = pkgs.nixFlakes;
+                  extraOptions = ''
+                    experimental-features = nix-command flakes
+                  '';
+                };
+
+                system.stateVersion = "21.11";
+                
+              };
+            })
+          ];
+        };
       };
     };
 }

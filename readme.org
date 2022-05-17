@@ -70,21 +70,24 @@ make your own directory for your configs, then cd to it
 mkdir <name>
 cd <name>
 
-cp etc/nixos/*.nix .
+cp etc/nixos/hardware-configuration.nix .
 
 curl -o flake.nix -H
 "Accept:application/vnd.github.v3.raw" https://api.github.com/repos/jessenieboer/nixos-bootstrap/contents/flake.nix?ref=master
 
-
-
 nixos-rebuild switch --flake .#minimal
 ** further config
 *** from scratch
-*** getting existing configs from githup
+*** getting existing configs from github
+create a dev env that has the following?:
+
+in order to connect to github, you have to have git and an ssh key, and a way to get that ssh key into github (copy/paste, browser, mouse)
+
 add enough config stuff to push it to a remote if you want (i'm using github)
 https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
 
 can remove this ssh key later and make a new one when the user configs are set up correctly in future configurations
+
 
 * ip-factory
 - put together combinations of the different scopes to get the machine you want (dev machine, build server, general computing, etc...)
