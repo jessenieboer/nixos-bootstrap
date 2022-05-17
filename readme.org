@@ -78,7 +78,7 @@ curl -o flake.nix -H
 nixos-rebuild switch --flake .#minimal
 ** further config
 *** from scratch
-*** getting existing configs from github
+*** getting existing configs from a public github repo
 create a dev env that has the following?:
 
 in order to connect to github, you have to have git and an ssh key, and a way to get that ssh key into github (copy/paste, browser, mouse)
